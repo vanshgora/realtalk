@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const connectDB = require('./config/db');
+const { WebSocketServer, WebSocket } = require('ws');
 
 const PORT = process.env.PORT || 3000;
 
@@ -15,11 +16,27 @@ app.get('/', (req, res) => {
 }
 );
 
-app.listen(PORT, (err) => {
+const server = app.listen(PORT, (err) => {
     if(err){
         console.log('Error in running server', err);
     } else {
         connectDB();
         console.log('Server is running on port', PORT);
     }
+});
+
+const wss = new WebSocketServer({ server });
+
+wss.on('connection', (ws) => {
+    console.log('Client connected');
+
+    ws.on('message', (message) => {
+        console.log('Received:', message.toString());
+
+        wss.clients.forEach((client) => {
+            if(client.readyState === WebSocket.OPEN) {
+                client.send(message.toString());
+            }
+        });
+    });
 });
