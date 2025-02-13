@@ -8,7 +8,7 @@ function App() {
   const [msg, setMsg] = useState('');
   const [msgList, setMsgList] = useState([]);
   const inputRef = useRef(null);
-  const ws = useWebSocket('wss://realtalk-9lke.onrender.com/', {
+  const ws = useWebSocket('wss://realtalk-9lke.onrender.com', {
     onMessage: (message) => {
       setMsgList([...msgList, message.data.toString()]);
     }
