@@ -8,9 +8,13 @@ function App() {
   const [msg, setMsg] = useState('');
   const [msgList, setMsgList] = useState([]);
   const inputRef = useRef(null);
-  const ws = useWebSocket('wss://realtalk-9lke.onrender.com', {
+  // wss://realtalk-9lke.onrender.com'
+  const ws = useWebSocket('ws://localhost:3000', {
     onMessage: (message) => {
-      setMsgList([...msgList, message.data.toString()]);
+      console.log(message);
+      const data = JSON.parse(message.data);
+      console.log(data);
+      setMsgList([...msgList, data]);
     }
   });
 
@@ -46,10 +50,10 @@ function App() {
               {
                 msgList.map((message, index) => <MessageBox
                   key={index}
-                  position={"left"}
+                  position={message.isMe?"right":"left"}
                   type={"text"}
-                  title={"Message Box Title"}
-                  text={message}
+                  title={message.isMe?"You":"Anonymous"}
+                  text={message.message}
                   styles={{ color: 'black' }}
                   className='my-5'
                 />)

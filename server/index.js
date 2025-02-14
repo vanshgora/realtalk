@@ -34,8 +34,12 @@ wss.on('connection', (ws) => {
         console.log('Received:', message.toString());
 
         wss.clients.forEach((client) => {
+            const data = {message: message.toString()};
             if(client.readyState === WebSocket.OPEN) {
-                client.send(message.toString());
+                if(client == ws) {
+                    data['isMe'] = true;
+                }
+                client.send(JSON.stringify(data));
             }
         });
     });
