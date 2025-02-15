@@ -1,6 +1,7 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose = require('mongoose');
-const  Schema = mongoose.Schema;
-
+const Schema = mongoose.Schema;
 const userSchema = new Schema({
     first_name: {
         type: String,
@@ -34,8 +35,11 @@ const userSchema = new Schema({
         type: String,
         required: true,
         trim: true
+    },
+    isOnline: {
+        type: Boolean,
+        default: false
     }
 });
-
 const User = mongoose.model('User', userSchema);
-export default User;
+exports.default = User;
