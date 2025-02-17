@@ -9,7 +9,7 @@ function App() {
   const [msgList, setMsgList] = useState([]);
   const inputRef = useRef(null);
   // wss://realtalk-9lke.onrender.com'
-  const ws = useWebSocket('https://realtalk-yqr6.onrender.com', {
+  const ws = useWebSocket('wss://realtalk-yqr6.onrender.com', {
     onMessage: (message) => {
       console.log(message);
       const data = JSON.parse(message.data);
