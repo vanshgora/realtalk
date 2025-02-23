@@ -43,9 +43,9 @@ wss.on('connection', (ws: WebSocket) => {
     console.log('Client connected');
 
     ws.on('message', (message: string) => {
-        console.log('Received:', message);
+        console.log('Received:', message.toString());
 
-        const data: WebSocketMessage = { message };
+        const data: WebSocketMessage = { message: message.toString() };
 
         wss.clients.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {

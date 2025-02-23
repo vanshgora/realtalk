@@ -35,8 +35,8 @@ const wss = new ws_1.WebSocketServer({ server });
 wss.on('connection', (ws) => {
     console.log('Client connected');
     ws.on('message', (message) => {
-        console.log('Received:', message);
-        const data = { message };
+        console.log('Received:', message.toString());
+        const data = { message: message.toString() };
         wss.clients.forEach((client) => {
             if (client.readyState === ws_1.WebSocket.OPEN) {
                 client.send(JSON.stringify({ ...data, isMe: client === ws }));
