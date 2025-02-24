@@ -3,6 +3,8 @@ import { WebSocketServer, WebSocket } from 'ws';
 import http from 'http';
 import dotenv from 'dotenv';
 import connectDB from './config/db';
+import cors from 'cors';
+import userRoutes from './routes/userRoutes';
 
 dotenv.config();
 
@@ -24,6 +26,13 @@ app.get('/', (req: Request, res: Response) => {
 
 // Create HTTP server
 const server = http.createServer(app);
+
+app.use(cors({
+    origin: "http://localhost:5173",
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type,Authorization"
+}));
+app.use('/api/users', userRoutes);
 
 // Start Server
 server.listen(PORT, () => {

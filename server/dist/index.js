@@ -8,6 +8,8 @@ const ws_1 = require("ws");
 const http_1 = __importDefault(require("http"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const db_1 = __importDefault(require("./config/db"));
+const cors_1 = __importDefault(require("cors"));
+const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = parseInt(process.env.PORT || '3000', 10);
@@ -25,6 +27,12 @@ app.get('/', (req, res) => {
 });
 // Create HTTP server
 const server = http_1.default.createServer(app);
+app.use((0, cors_1.default)({
+    origin: "http://localhost:5173",
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type,Authorization"
+}));
+app.use('/api/users', userRoutes_1.default);
 // Start Server
 server.listen(PORT, () => {
     (0, db_1.default)();

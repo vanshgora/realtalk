@@ -1,0 +1,9 @@
+
+.messages-div{
+    overflow: scroll;
+  }
+  
+  .message-input {
+    min-width: 97% !important;
+    width: 97% !important;
+  } 
