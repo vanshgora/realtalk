@@ -29,7 +29,8 @@ app.get('/', (req, res) => {
 // Create HTTP server
 const server = http_1.default.createServer(app);
 app.use((0, cors_1.default)({
-    origin: "http://localhost:5173",
+    //http://localhost:5173 
+    origin: "https://realtalk-git-jwt-auth-implementation-vansh-goras-projects.vercel.app/register",
     methods: "GET,POST,PUT,DELETE",
     allowedHeaders: "Content-Type,Authorization"
 }));
