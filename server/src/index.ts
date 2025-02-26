@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import connectDB from './config/db';
 import cors from 'cors';
 import userRoutes from './routes/userRoutes';
+import User from './models/user_model';
 
 dotenv.config();
 
@@ -51,14 +52,18 @@ interface WebSocketMessage {
 wss.on('connection', (ws: WebSocket) => {
     console.log('Client connected');
 
-    ws.on('message', (message: string) => {
-        console.log('Received:', message.toString());
+    ws.on('message', async (message: string) => {
+        console.log('Received:', JSON.parse(message.toString()));
 
-        const data: WebSocketMessage = { message: message.toString() };
+        const msgObj = JSON.parse(message.toString());
+
+        const user = await User.findOne({ _id: msgObj.user_id });
+
+        const data: WebSocketMessage & { username: string , user_id: string} = { message: msgObj.message, username: user.username, user_id: user._id };
 
         wss.clients.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify({ ...data, isMe: client === ws }));
+                client.send(JSON.stringify({ ...data }));
             }
         });
     });

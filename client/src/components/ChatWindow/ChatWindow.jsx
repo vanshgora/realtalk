@@ -3,15 +3,19 @@ import "react-chat-elements/dist/main.css";
 import useWebSocket from 'react-use-websocket';
 import { Avatar, Button, Input, MessageBox, Navbar } from 'react-chat-elements';
 import './ChatWindow.css';
+import { getUser } from '../../services/userServices';
+import { prodenv } from '../../config/config'
+
 
 export default function ChatWindow() {
     const [msg, setMsg] = useState('');
     const [msgList, setMsgList] = useState([]);
     const inputRef = useRef(null);
+    const user = getUser();
     // wss://realtalk-9lke.onrender.com'
-    const ws = useWebSocket('wss://realtalk-yqr6.onrender.com', {
+    // wss://realtalk-yqr6.onrender.com
+    const ws = useWebSocket(prodenv? 'wss://realtalk-yqr6.onrender.com': 'ws://localhost:3000', {
         onMessage: (message) => {
-            console.log(message);
             const data = JSON.parse(message.data);
             console.log(data);
             setMsgList([...msgList, data]);
@@ -23,7 +27,7 @@ export default function ChatWindow() {
     }
 
     const handleClickSendMessage = useCallback(() => {
-        ws.sendMessage(msg);
+        ws.sendMessage(JSON.stringify({ message: msg, user_id: user._id }));
         setMsg('');
         clearInput();
     });
@@ -50,12 +54,13 @@ export default function ChatWindow() {
                             {
                                 msgList.map((message, index) => <MessageBox
                                     key={index}
-                                    position={message.isMe ? "right" : "left"}
+                                    position={message.user_id === user._id  ? "right" : "left"}
                                     type={"text"}
-                                    title={message.isMe ? "You" : "Anonymous"}
+                                    title={message.user_id === user._id ? "You" : message.username}
                                     text={message.message}
                                     styles={{ color: 'black' }}
                                     className='my-5'
+                                    date={new Date()}
                                 />)
                             }
                         </ol>

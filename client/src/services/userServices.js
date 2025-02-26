@@ -1,6 +1,7 @@
 import axios from "axios";
+import { prodenv } from '../config/config';
 
-const API_URL = "http://localhost:3000/api/users";
+const API_URL = prodenv ? "https://realtalk-yqr6.onrender.com/api/users" : "http://localhost:3000/api/users";
 
 /**
  * Sends a login request to the backend API.
@@ -13,7 +14,7 @@ const login = async (userData) => {
 
         if (response.data.token) {
             localStorage.setItem("token", response.data.token);
-            const user = JSON.stringify(atob(response.data.token.split(".")[1]));
+            const user = atob(response.data.token.split(".")[1]);
             localStorage.setItem('user', user);
         }
 
@@ -46,4 +47,9 @@ const getUser = () => {
     return user ? JSON.parse(user) : null;
 }
 
-export { login, register, getUser };
+const getToken = () => {
+    const token = localStorage.getItem('token');
+    return token ? token : null;
+}
+
+export { login, register, getUser, getToken };

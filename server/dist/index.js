@@ -10,6 +10,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const db_1 = __importDefault(require("./config/db"));
 const cors_1 = __importDefault(require("cors"));
 const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
+const user_model_1 = __importDefault(require("./models/user_model"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = parseInt(process.env.PORT || '3000', 10);
@@ -42,12 +43,14 @@ server.listen(PORT, () => {
 const wss = new ws_1.WebSocketServer({ server });
 wss.on('connection', (ws) => {
     console.log('Client connected');
-    ws.on('message', (message) => {
-        console.log('Received:', message.toString());
-        const data = { message: message.toString() };
+    ws.on('message', async (message) => {
+        console.log('Received:', JSON.parse(message.toString()));
+        const msgObj = JSON.parse(message.toString());
+        const user = await user_model_1.default.findOne({ _id: msgObj.user_id });
+        const data = { message: msgObj.message, username: user.username, user_id: user._id };
         wss.clients.forEach((client) => {
             if (client.readyState === ws_1.WebSocket.OPEN) {
-                client.send(JSON.stringify({ ...data, isMe: client === ws }));
+                client.send(JSON.stringify({ ...data }));
             }
         });
     });
