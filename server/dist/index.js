@@ -30,7 +30,7 @@ app.get('/', (req, res) => {
 const server = http_1.default.createServer(app);
 app.use((0, cors_1.default)({
     //http://localhost:5173 
-    origin: "https://realtalk-git-jwt-auth-implementation-vansh-goras-projects.vercel.app",
+    origin: "https://realtalk-yqr6.onrender.com",
     methods: "GET,POST,PUT,DELETE",
     allowedHeaders: "Content-Type,Authorization"
 }));
