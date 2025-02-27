@@ -30,7 +30,7 @@ const server = http.createServer(app);
 
 app.use(cors({
     //http://localhost:5173 
-    origin: "https://realtalk-yqr6.onrender.com",
+    origin: "https://realtalk.vercel.app",
     methods: "GET,POST,PUT,DELETE",
     allowedHeaders: "Content-Type,Authorization"
 }));
