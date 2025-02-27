@@ -8,6 +8,9 @@ const ws_1 = require("ws");
 const http_1 = __importDefault(require("http"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const db_1 = __importDefault(require("./config/db"));
+const cors_1 = __importDefault(require("cors"));
+const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
+const user_model_1 = __importDefault(require("./models/user_model"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = parseInt(process.env.PORT || '3000', 10);
@@ -25,6 +28,13 @@ app.get('/', (req, res) => {
 });
 // Create HTTP server
 const server = http_1.default.createServer(app);
+app.use((0, cors_1.default)({
+    //http://localhost:5173 
+    origin: "https://realtalk-git-jwt-auth-implementation-vansh-goras-projects.vercel.app",
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type,Authorization"
+}));
+app.use('/api/users', userRoutes_1.default);
 // Start Server
 server.listen(PORT, () => {
     (0, db_1.default)();
@@ -34,12 +44,14 @@ server.listen(PORT, () => {
 const wss = new ws_1.WebSocketServer({ server });
 wss.on('connection', (ws) => {
     console.log('Client connected');
-    ws.on('message', (message) => {
-        console.log('Received:', message.toString());
-        const data = { message: message.toString() };
+    ws.on('message', async (message) => {
+        console.log('Received:', JSON.parse(message.toString()));
+        const msgObj = JSON.parse(message.toString());
+        const user = await user_model_1.default.findOne({ _id: msgObj.user_id });
+        const data = { message: msgObj.message, username: user.username, user_id: user._id };
         wss.clients.forEach((client) => {
             if (client.readyState === ws_1.WebSocket.OPEN) {
-                client.send(JSON.stringify({ ...data, isMe: client === ws }));
+                client.send(JSON.stringify({ ...data }));
             }
         });
     });

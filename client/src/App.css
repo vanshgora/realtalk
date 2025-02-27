@@ -6,15 +6,7 @@
 }
 
 #root {
-  width: 100%;
   background-color: rgb(64, 64, 64);
+  min-height: 100vh;
+  min-width: 100vw;
 }
-
-.messages-div{
-  overflow: scroll;
-}
-
-.message-input {
-  min-width: 97% !important;
-  width: 97% !important;
-} 
